@@ -5,7 +5,6 @@ import java.util.Scanner;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 public class StoreData {
 
@@ -13,14 +12,27 @@ public class StoreData {
 
 	public static void main(String[] args) {
 		  //creating configuration object  
-	    Configuration cfg=new Configuration();  
-	    cfg.configure("hibernate.cfg.xml");//populates the data of the configuration file  
-	      
+	    //Configuration cfg=new Configuration();  
+	    //cfg.configure("hibernate.cfg.xml");//populates the data of the configuration file 
+	    
+	    /*StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+	    builder.applySettings(cfg.getProperties());
+	    ServiceRegistry registry = builder.build();
+	    SessionFactory factory=cfg.buildSessionFactory(registry);*/
 	    //creating seession factory object  
-	    SessionFactory factory=cfg.buildSessionFactory();  
-	      
-	    //creating session object  
-	    Session session=factory.openSession();
+	    //SessionFactory factory=cfg.buildSessionFactory();  
+	    /*ServiceRegistry servReg = new StandardServiceRegistryBuilder()
+	    		                      .applySettings(cfg.getProperties())
+	    		                      .build();
+	    SessionFactory factory = cfg.buildSessionFactory(servReg);*/
+		/*ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                .configure()
+                .build();
+
+        SessionFactory sessionFactory = new Configuration().buildSessionFactory( serviceRegistry );*/
+	    //creating session object 
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+	    Session session=sessionFactory.openSession();
 	    scanner = new Scanner(System.in);
 	    System.out.println("Enter First Name");
 	    String fName=scanner.next();
@@ -37,14 +49,15 @@ public class StoreData {
 	   
 	    //creating transaction object  
 	    Transaction t=session.beginTransaction();  
-	    Integer s1 = (Integer)session.save(e1);//persisting the object 
-	    System.out.println(s1);
+	    session.save(e1);//persisting the object 
 	    t.commit();//transaction is committed
 	    Object o = session.load(Employee.class,1);
 	    System.out.println(o);
 	    Employee emp = (Employee)o;
 	    System.out.println(emp);
 	    System.out.println(emp.getFirstName());
+	    //System.out.println(emp.getLastName());
+	    //System.out.println(emp.getAccBalance());
 	    
 	    
 	   /* session = factory.openSession();
@@ -69,7 +82,7 @@ public class StoreData {
 	    System.out.println(emp1);
 	    System.out.println(emp1.getAccBalance());*/
 	    session.close();  
-	    //factory.close();
+	    sessionFactory.close();
 	    System.out.println("successfully saved"); 
 
 	}
